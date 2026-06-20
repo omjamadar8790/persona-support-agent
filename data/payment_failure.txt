@@ -1,0 +1,8 @@
+Payment Failure
+
+Common reasons:
+- Expired card
+- Insufficient funds
+- Bank decline
+
+Retry payment or contact your bank.

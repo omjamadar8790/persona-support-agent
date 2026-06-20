@@ -1,0 +1,9 @@
+Billing Policy
+
+Refund requests are reviewed within 5 business days.
+
+Duplicate charges should be reported immediately.
+
+Billing disputes require review by the finance team.
+
+Customers can view invoices under Account > Billing.

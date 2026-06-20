@@ -1,0 +1,6 @@
+Service Level Agreement
+
+Platform uptime target:
+99.9%
+
+Critical incidents are reviewed within 1 hour.

@@ -1,0 +1,6 @@
+Browser Cache Guide
+
+1. Open browser settings.
+2. Clear cache and cookies.
+3. Restart browser.
+4. Log in again.
