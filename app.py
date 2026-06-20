@@ -27,6 +27,10 @@ if st.button("Submit"):
         st.success(persona)
 
         rag = LocalRAGPipeline()
+
+        # Debug: Show document count
+        st.write("Documents in DB:", rag.collection.count())
+
         docs = rag.retrieve(query)
 
         st.subheader("Retrieved Sources")
