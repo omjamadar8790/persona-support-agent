@@ -12,68 +12,77 @@ client = genai.Client(
 def classify_persona(user_message: str):
 
     prompt = f"""
-You are a customer support persona classifier.
+Classify this customer support message into ONE category:
 
-Classify the message into EXACTLY ONE category.
+1. Technical Expert
+2. Frustrated User
+3. Business Executive
 
-Technical Expert:
-- Mentions APIs
-- Logs
-- Error codes
-- Authentication
-- Configuration
-- Database integration
-- Technical troubleshooting
+Return ONLY JSON.
 
-Frustrated User:
-- Emotional language
-- Complaints
-- Urgent requests
-- Anger or frustration
-- Uses phrases like:
-  "nothing works"
-  "fix this"
-  "immediately"
-  "frustrated"
-  "annoyed"
-  "urgent"
-
-Business Executive:
-- Focuses on business impact
-- Operations
-- Revenue
-- Timelines
-- Resolution estimates
-- ROI
-
-Return ONLY valid JSON.
-
-Example:
+Format:
 {{
-    "persona": "Frustrated User",
-    "reason": "User expresses frustration and urgency."
+    "persona": "",
+    "reason": ""
 }}
 
 Message:
 {user_message}
 """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-
-    text = response.text.strip()
-
-    text = text.replace("```json", "")
-    text = text.replace("```", "")
-
     try:
-        return json.loads(text)
-    except Exception:
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        text = response.text.strip()
+
+        try:
+            return json.loads(text)
+
+        except Exception:
+
+            if "frustrat" in user_message.lower():
+                return {
+                    "persona": "Frustrated User",
+                    "reason": "Fallback classification"
+                }
+
+            return {
+                "persona": "Technical Expert",
+                "reason": "Fallback classification"
+            }
+
+    except Exception as e:
+
+        msg = user_message.lower()
+
+        if any(word in msg for word in [
+            "refund",
+            "billing",
+            "charge",
+            "payment",
+            "duplicate"
+        ]):
+            persona = "Frustrated User"
+
+        elif any(word in msg for word in [
+            "uptime",
+            "timeline",
+            "business",
+            "operational",
+            "executive"
+        ]):
+            persona = "Business Executive"
+
+        else:
+            persona = "Technical Expert"
+
         return {
-            "persona": "Frustrated User",
-            "reason": "Fallback classification"
+            "persona": persona,
+            "reason": f"Gemini unavailable: {str(e)}"
         }
 
 if __name__ == "__main__":
