@@ -12,9 +12,7 @@ st.set_page_config(
 
 st.title("🤖 Persona-Adaptive Customer Support Agent")
 
-query = st.text_area(
-    "Enter Customer Message"
-)
+query = st.text_area("Enter Customer Message")
 
 if st.button("Submit"):
 
@@ -28,7 +26,11 @@ if st.button("Submit"):
 
         rag = LocalRAGPipeline()
 
-        # Debug: Show document count
+        # Auto-ingest documents if DB is empty
+        if rag.collection.count() == 0:
+            with st.spinner("Loading knowledge base..."):
+                rag.load_all_documents()
+
         st.write("Documents in DB:", rag.collection.count())
 
         docs = rag.retrieve(query)
